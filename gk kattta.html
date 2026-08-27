@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GK कट्टा - मूल्यमापन पोर्टल</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #0F172A;
+            --bg-card: #1E293B;
+            --bg-card-hover: #334155;
+            --accent-blue: #38BDF8;
+            --accent-purple: #818CF8;
+            --accent-green: #34D399;
+            --accent-red: #F87171;
+            --accent-amber: #FBBF24;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --border-color: #334155;
+            --radius-lg: 16px;
+            --radius-md: 8px;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .portal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .brand-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer-badge {
+            background: rgba(248, 113, 113, 0.1);
+            color: var(--accent-red);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .screen {
+            padding: 32px;
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        p.subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 18px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .readonly-date-box {
+            width: 100%;
+            padding: 14px 18px;
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--accent-blue);
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            user-select: none;
+        }
+
+        .rules-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+        }
+
+        .rules-card ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .rules-card li {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .option-card {
+            padding: 16px 20px;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .option-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .option-card:hover:not(.locked) {
+            border-color: var(--text-secondary);
+            background: var(--bg-card-hover);
+        }
+
+        .option-card.locked {
+            cursor: not-allowed;
+        }
+
+        .option-radio {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .option-card.correct-ans {
+            border-color: var(--accent-green) !important;
+            background: rgba(52, 211, 153, 0.15) !important;
+        }
+
+        .option-card.correct-ans .option-radio {
+            border-color: var(--accent-green) !important;
+            background: var(--accent-green) !important;
+        }
+
+        .option-card.wrong-ans {
+            border-color: var(--accent-red) !important;
+            background: rgba(248, 113, 113, 0.15) !important;
+        }
+
+        .option-card.wrong-ans .option-radio {
+            border-color: var(--accent-red) !important;
+            background: var(--accent-red) !important;
+        }
+
+        .feedback-badge {
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .feedback-badge.correct { color: var(--accent-green); }
+        .feedback-badge.wrong { color: var(--accent-red); }
+
+        .instant-explanation {
+            margin-top: 18px;
+            padding: 16px;
+            background: var(--bg-main);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--accent-blue);
+            font-size: 0.9rem;
+            display: none;
+            line-height: 1.5;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #FFFFFF;
+            flex: 2;
+        }
+
+        .btn-secondary {
+            background: var(--bg-main);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            flex: 1;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-title {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .metric-value.score { color: var(--accent-blue); }
+        .metric-value.correct { color: var(--accent-green); }
+        .metric-value.wrong { color: var(--accent-red); }
+        .metric-value.skipped { color: var(--accent-amber); }
+
+        .topic-tag {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--bg-main);
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            border-left: 4px solid var(--border-color);
+        }
+
+        .topic-tag.weak { border-left-color: var(--accent-red); }
+        .topic-tag.strong { border-left-color: var(--accent-green); }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .badge-weak { background: rgba(248, 113, 113, 0.2); color: var(--accent-red); }
+        .badge-strong { background: rgba(52, 211, 153, 0.2); color: var(--accent-green); }
+
+        .explanation-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .explanation-card strong { color: var(--accent-blue); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="portal-header">
+            <div class="brand-title">
+                <i class="fa-solid fa-graduation-cap"></i> CIVIL कट्टा / GK Katta
+            </div>
+            <div class="timer-badge" id="timer-container" style="display: none;">
+                <i class="fa-regular fa-clock"></i> <span id="timer-display">15:00</span>
+            </div>
+        </div>
+
+        <!-- SCREEN 1: Registration -->
+        <div class="screen active" id="registration-screen">
+            <h2>उमेदवार नोंदणी</h2>
+            <p class="subtitle">आजची परीक्षा सुरू करण्यासाठी आपले नाव प्रविष्ट करा.</p>
+            
+            <div class="input-group">
+                <label>परीक्षेची तारीख (निश्चित)</label>
+                <div class="readonly-date-box">
+                    <i class="fa-regular fa-calendar-days"></i>
+                    <span id="display-assessment-date">2026-08-14</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="candidate-name">पूर्ण नाव</label>
+                <input type="text" id="candidate-name" placeholder="तुमचे पूर्ण नाव येथे टाका" required>
+            </div>
+
+            <div class="rules-card">
+                <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 6px;">गुणदान पद्धतीचे नियम:</div>
+                <ul>
+                    <li><i class="fa-solid fa-circle-check" style="color: var(--accent-green);"></i> बरोबर उत्तर: <strong>+१.० गुण</strong></li>
+                    <li><i class="fa-solid fa-circle-xmark" style="color: var(--accent-red);"></i> चुकीचे उत्तर: <strong>-१.० गुण</strong></li>
+                    <li><i class="fa-solid fa-circle-minus" style="color: var(--accent-amber);"></i> सोडवलेला नाही / वगळलेला: <strong>०.० गुण</strong></li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" id="start-btn" onclick="fetchAndStartExam()">
+                प्रश्न लोड करा आणि चाचणी सुरू करा <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- SCREEN 2: Question Paper -->
+        <div class="screen" id="exam-screen">
+            <p class="subtitle" id="question-tracker">प्रश्न १ पैकी ०</p>
+            <h2 id="question-text" style="font-size: 1.25rem; line-height: 1.5;">प्रश्न लोड होत आहे...</h2>
+
+            <div class="options-grid" id="options-container"></div>
+            <div class="instant-explanation" id="instant-explanation"></div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="skip-btn" onclick="skipQuestion()">
+                    <i class="fa-solid fa-forward"></i> प्रश्न वगळा
+                </button>
+                <button class="btn btn-primary" id="next-btn" onclick="advanceNext()">
+                    पुढील प्रश्न <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: Performance Report -->
+        <div class="screen" id="result-screen">
+            <h2>अधिकृत निकालपत्रक (गुणपत्रिका)</h2>
+            <p class="subtitle" id="candidate-greeting">मूल्यमापन सारांश</p>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-title">एकूण गुण</div>
+                    <div class="metric-value score" id="final-score">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">बरोबर</div>
+                    <div class="metric-value correct" id="count-correct">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">चुकीचे</div>
+                    <div class="metric-value wrong" id="count-wrong">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">वगळलेले</div>
+                    <div class="metric-value skipped" id="count-skipped">0</div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <h3 style="font-size: 1.1rem; margin-bottom: 12px;">विषयनिहाय कामगिरीचे विश्लेषण</h3>
+                <div id="category-analysis-container"></div>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <h3 style="font-size: 1.1rem; margin-bottom: 12px;">स्पष्टीकरण आणि पुनरावलोकन</h3>
+                <div id="explanations-container"></div>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" onclick="window.print()">
+                <i class="fa-solid fa-download"></i> निकालपत्रक डाउनलोड करा (PDF)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // 1. SET YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+        // =========================================================================
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhMNEOnVyAvoxIhKOzzhYKNs3TGbiRBP8M-o64IWVPDInK0teGRb961tEorMrlqpaIGg/exec";
+
+        // =========================================================================
+        // 2. ASSESSMENT DATE (Matches date in your 'gk' tab)
+        // =========================================================================
+        const ASSESSMENT_DATE = "2026-08-15"; 
+
+        const dateEl = document.getElementById('display-assessment-date');
+        if (dateEl) {
+            dateEl.textContent = ASSESSMENT_DATE;
+        }
+
+        let examQuestions = [];
+        let currentQuestionIndex = 0;
+        let selectedAnswers = {};
+        let timerInterval = null;
+        let timeRemaining = 900;
+        let startTime = 0;
+        let isDataReady = false;
+
+        (async function prefetch() {
+            try {
+                const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?date=${encodeURIComponent(ASSESSMENT_DATE)}`);
+                const data = await response.json();
+                if (data.status === "success" && data.questions && data.questions.length > 0) {
+                    examQuestions = data.questions;
+                    isDataReady = true;
+                }
+            } catch (e) {
+                console.warn("Prefetch standby:", e);
+            }
+        })();
+
+        async function fetchAndStartExam() {
+            const nameInput = document.getElementById('candidate-name').value.trim();
+
+            if (!nameInput) {
+                alert("कृपया चाचणी सुरू करण्यासाठी आपले नाव प्रविष्ट करा.");
+                return;
+            }
+
+            if (isDataReady && examQuestions.length > 0) {
+                startExamScreen();
+                return;
+            }
+
+            const startBtn = document.getElementById('start-btn');
+            startBtn.disabled = true;
+            startBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> प्रश्न लोड होत आहेत...';
+
+            try {
+                const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?date=${encodeURIComponent(ASSESSMENT_DATE)}`);
+                const data = await response.json();
+
+                if (data.status === "success" && data.questions && data.questions.length > 0) {
+                    examQuestions = data.questions;
+                    isDataReady = true;
+                    startExamScreen();
+                } else {
+                    alert(ASSESSMENT_DATE + " या तारखेसाठी कोणतेही प्रश्न उपलब्ध नाहीत. कृपया तुमची गुगल शीट तपासा.");
+                    startBtn.disabled = false;
+                    startBtn.innerHTML = 'प्रश्न लोड करा आणि चाचणी सुरू करा <i class="fa-solid fa-arrow-right"></i>';
+                }
+            } catch (err) {
+                alert("डेटाबेसशी संपर्क साधण्यात त्रुटी आली.");
+                console.error(err);
+                startBtn.disabled = false;
+                startBtn.innerHTML = 'प्रश्न लोड करा आणि चाचणी सुरू करा <i class="fa-solid fa-arrow-right"></i>';
+            }
+        }
+
+        function startExamScreen() {
+            document.getElementById('registration-screen').classList.remove('active');
+            document.getElementById('exam-screen').classList.add('active');
+            document.getElementById('timer-container').style.display = 'flex';
+
+            startTime = Date.now();
+            startTimer();
+            loadQuestion();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                document.getElementById('timer-display').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    finishExam();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            const q = examQuestions[currentQuestionIndex];
+            document.getElementById('question-tracker').textContent = `प्रश्न ${currentQuestionIndex + 1} / ${examQuestions.length}`;
+            document.getElementById('question-text').textContent = q.question;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const explanationBox = document.getElementById('instant-explanation');
+            explanationBox.style.display = 'none';
+            explanationBox.innerHTML = '';
+
+            const isAnswered = selectedAnswers[currentQuestionIndex] !== undefined;
+
+            q.options.forEach((opt, idx) => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.id = `option-${idx}`;
+                
+                let feedbackHtml = '';
+
+                if (isAnswered) {
+                    optionCard.classList.add('locked');
+                    const userSelected = selectedAnswers[currentQuestionIndex];
+
+                    if (idx === q.correct) {
+                        optionCard.classList.add('correct-ans');
+                        feedbackHtml = `<span class="feedback-badge correct"><i class="fa-solid fa-circle-check"></i> बरोबर</span>`;
+                    } else if (idx === userSelected && userSelected !== q.correct) {
+                        optionCard.classList.add('wrong-ans');
+                        feedbackHtml = `<span class="feedback-badge wrong"><i class="fa-solid fa-circle-xmark"></i> चुकीचे</span>`;
+                    }
+                } else {
+                    optionCard.onclick = () => selectOption(idx);
+                }
+
+                optionCard.innerHTML = `
+                    <div class="option-content">
+                        <div class="option-radio"></div>
+                        <div>${opt}</div>
+                    </div>
+                    ${feedbackHtml}
+                `;
+                optionsContainer.appendChild(optionCard);
+            });
+
+            if (isAnswered && selectedAnswers[currentQuestionIndex] !== null) {
+                explanationBox.style.display = 'block';
+                explanationBox.innerHTML = `<strong>स्पष्टीकरण:</strong> ${q.explanation || 'कोणतेही स्पष्टीकरण उपलब्ध नाही.'}`;
+            }
+
+            const nextBtn = document.getElementById('next-btn');
+            if (currentQuestionIndex === examQuestions.length - 1) {
+                nextBtn.innerHTML = 'चाचणी सबमिट करा <i class="fa-solid fa-check"></i>';
+            } else {
+                nextBtn.innerHTML = 'पुढील प्रश्न <i class="fa-solid fa-arrow-right"></i>';
+            }
+        }
+
+        function selectOption(selectedIndex) {
+            if (selectedAnswers[currentQuestionIndex] !== undefined) return;
+
+            const q = examQuestions[currentQuestionIndex];
+            selectedAnswers[currentQuestionIndex] = selectedIndex;
+
+            q.options.forEach((_, idx) => {
+                const card = document.getElementById(`option-${idx}`);
+                if (!card) return;
+                card.onclick = null;
+                card.classList.add('locked');
+
+                if (idx === q.correct) {
+                    card.classList.add('correct-ans');
+                    card.innerHTML += `<span class="feedback-badge correct"><i class="fa-solid fa-circle-check"></i> बरोबर</span>`;
+                } else if (idx === selectedIndex && selectedIndex !== q.correct) {
+                    card.classList.add('wrong-ans');
+                    card.innerHTML += `<span class="feedback-badge wrong"><i class="fa-solid fa-circle-xmark"></i> चुकीचे</span>`;
+                }
+            });
+
+            const explanationBox = document.getElementById('instant-explanation');
+            explanationBox.style.display = 'block';
+            explanationBox.innerHTML = `<strong>स्पष्टीकरण:</strong> ${q.explanation || 'कोणतेही स्पष्टीकरण उपलब्ध नाही.'}`;
+        }
+
+        function skipQuestion() {
+            if (selectedAnswers[currentQuestionIndex] === undefined) {
+                selectedAnswers[currentQuestionIndex] = null;
+            }
+            advanceNext();
+        }
+
+        function advanceNext() {
+            if (selectedAnswers[currentQuestionIndex] === undefined) {
+                alert("कृपया उत्तर निवडा किंवा पुढे जाण्यासाठी 'प्रश्न वगळा' वर क्लिक करा.");
+                return;
+            }
+
+            if (currentQuestionIndex < examQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                finishExam();
+            }
+        }
+
+        function finishExam() {
+            clearInterval(timerInterval);
+
+            document.getElementById('exam-screen').classList.remove('active');
+            document.getElementById('timer-container').style.display = 'none';
+            document.getElementById('result-screen').classList.add('active');
+
+            const candidateName = document.getElementById('candidate-name').value;
+            document.getElementById('candidate-greeting').textContent = `उमेदवार अहवाल: ${candidateName} | दिनांक: ${ASSESSMENT_DATE}`;
+
+            let totalScore = 0;
+            let correctCount = 0;
+            let wrongCount = 0;
+            let skippedCount = 0;
+
+            const categoryStats = {};
+
+            examQuestions.forEach((q, idx) => {
+                const userAns = selectedAnswers[idx];
+                const category = q.topic || "सामान्य";
+
+                if (!categoryStats[category]) {
+                    categoryStats[category] = { total: 0, correct: 0, wrong: 0, skipped: 0 };
+                }
+                categoryStats[category].total++;
+
+                if (userAns === null || userAns === undefined) {
+                    skippedCount++;
+                    categoryStats[category].skipped++;
+                } else if (userAns === q.correct) {
+                    correctCount++;
+                    totalScore += 1;
+                    categoryStats[category].correct++;
+                } else {
+                    wrongCount++;
+                    totalScore -= 1;
+                    categoryStats[category].wrong++;
+                }
+            });
+
+            document.getElementById('final-score').textContent = totalScore;
+            document.getElementById('count-correct').textContent = correctCount;
+            document.getElementById('count-wrong').textContent = wrongCount;
+            document.getElementById('count-skipped').textContent = skippedCount;
+
+            const categoryContainer = document.getElementById('category-analysis-container');
+            categoryContainer.innerHTML = '';
+
+            Object.keys(categoryStats).forEach(category => {
+                const stats = categoryStats[category];
+                const isWeak = stats.wrong > 0;
+
+                const tag = document.createElement('div');
+                tag.className = `topic-tag ${isWeak ? 'weak' : 'strong'}`;
+                
+                const statusMessage = isWeak 
+                    ? `तुमची <strong>${category}</strong> मधील कामगिरी कमकुवत होती` 
+                    : `तुमची <strong>${category}</strong> मधील कामगिरी उत्तम होती`;
+
+                const badgeLabel = isWeak ? 'सुधारणा आवश्यक' : 'उत्कृष्ट';
+
+                tag.innerHTML = `
+                    <span>${statusMessage} (${stats.correct}/${stats.total} बरोबर)</span>
+                    <span class="badge ${isWeak ? 'badge-weak' : 'badge-strong'}">${badgeLabel}</span>
+                `;
+                categoryContainer.appendChild(tag);
+            });
+
+            const explanationsContainer = document.getElementById('explanations-container');
+            explanationsContainer.innerHTML = '';
+            examQuestions.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'explanation-card';
+                card.innerHTML = `
+                    <div style="margin-bottom: 4px;"><strong>प्रश्न ${idx + 1} (${q.topic}): ${q.question}</strong></div>
+                    <div style="color: var(--text-secondary);">${q.explanation || 'कोणतेही स्पष्टीकरण उपलब्ध नाही.'}</div>
+                `;
+                explanationsContainer.appendChild(card);
+            });
+
+            const timeTakenMins = Math.ceil((Date.now() - startTime) / 60000);
+
+            fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    date: ASSESSMENT_DATE,
+                    student_name: candidateName,
+                    student_id: candidateName.replace(/\s+/g, '_').toLowerCase(),
+                    score: totalScore,
+                    total_questions: examQuestions.length,
+                    time_taken_mins: timeTakenMins
+                })
+            }).catch(err => console.error("निकाल सेव्ह करताना त्रुटी आली:", err));
+        }
+    </script>
+</body>
+</html>
